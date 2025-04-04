@@ -8,7 +8,7 @@ async function createTable() {
       IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Tables' AND xtype='U')
       CREATE TABLE Tables (
         Id INT IDENTITY(1,1) PRIMARY KEY,
-        Name NVARCHAR(255) NOT NULL
+        Name NVARCHAR(10) NOT NULL
       )
     `;
 

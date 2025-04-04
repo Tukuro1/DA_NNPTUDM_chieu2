@@ -1,13 +1,10 @@
 CREATE DATABASE DA_QLNH
 GO
+
 USE DA_QLNH
 GO
-CREATE TABLE Tables(
-    Id int PRIMARY KEY IDENTITY,
-    NameTable NVARCHAR(10) NOT NULL,
-)
-GO
-INSERT INTO Tables(NameTable) VALUES
+
+INSERT INTO Tables(Name) VALUES
 ('Bàn số 1'),
 ('Bàn số 2'),
 ('Bàn số 3')

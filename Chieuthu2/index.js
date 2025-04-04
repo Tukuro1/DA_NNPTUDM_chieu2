@@ -11,6 +11,7 @@ app.get('/hello',function(require , res){
     var name = require.query.name;
     res.send({result: require.query});
 })
+
 app.get('/student/:name',function(require , res){
     var name = require.params.name;
     res.send({result: require.params});

@@ -1,7 +1,7 @@
 var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
-const { conn, sql } = require("./connect");
+const { conn, sql } = require("./config/connect");
 app.use(bodyParser.json());
 
 //các route

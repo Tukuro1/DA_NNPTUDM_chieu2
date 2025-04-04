@@ -1,42 +1,25 @@
-var express = require('express');
+var express = require("express");
 var app = express();
-var bodyParser = require('body-parser');
+var bodyParser = require("body-parser");
+const { conn, sql } = require("./connect");
 app.use(bodyParser.json());
 
 //các route
-app.get('',function(require , res){
-    res.send('<form method = "POST" action="/register"><button>Register</button></form>');
-})
-app.get('/hello',function(require , res){
-    var name = require.query.name;
-    res.send({result: require.query});
-})
-
-app.get('/student/:name',function(require , res){
-    var name = require.params.name;
-    res.send({result: require.params});
-})
-
-app.post('/register',function(require , res){
-    console.table(require.body);
-    res.send({result: require.body});
+app.get("", function (reg, res) {
+  res.send("Hello");
 });
 
-app.put('/update',function(require , res){
-    var respomData ={
-        "message" : "Cập nhật dữ liệu thành công",
-        "data" :require.body,
-        "status" : true
-    }
-    res.send(respomData);
-});
-
-app.delete('/delete :id',function(require , res){
-    var id = require.params.id;
-    res.send("Hello delete"+id);
+// Get => http://localhost:3000/tables
+app.get("/tables", async function (reg, res) {
+  // SELECT * FROM Tables
+  var pool = await conn;
+  var sqlString = "SELECT * FROM Tables";
+  return await pool.request().query(sqlString, function (err, data) {
+    res.send({ result: data.recordset });
+  });
 });
 
 //mở cổng server
-app.listen(3000, function(){
-    console.log("Ứng dụng đang chạy tại địa chỉ: http://localhost:3000");
+app.listen(3000, function () {
+  console.log("Ứng dụng đang chạy tại địa chỉ: http://localhost:3000");
 });

@@ -8,7 +8,9 @@ async function createTable() {
       IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Tables' AND xtype='U')
       CREATE TABLE Tables (
         Id INT IDENTITY(1,1) PRIMARY KEY,
-        Name NVARCHAR(10) NOT NULL
+        Name NVARCHAR(10) NOT NULL,
+        UserId INT NULL, -- Khóa ngoại liên kết với bảng Users
+        CONSTRAINT FK_User_Tables FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE SET NULL
       )
     `;
 

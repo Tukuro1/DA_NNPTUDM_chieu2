@@ -1,21 +1,21 @@
 const { createRoleTable } = require("./models/Role");
-const { createStaffTable } = require("./models/Staff");
 const { createUserTable } = require("./models/User");
-const { createTable } = require("./models/Tables");
+const { createUserRoleTable } = require("./models/UserRole");
+const { createCategoryTable } = require("./models/Category");
+const { createProductTable } = require("./models/Product");
+const { createOrderTable } = require("./models/Order");
+const { createOrderDetailTable } = require("./models/OrderDetail");
 
 (async () => {
   try {
-    // Tạo bảng Roles trước vì Staff phụ thuộc vào nó
+    // Tạo bảng theo thứ tự phụ thuộc
     await createRoleTable();
-
-    // Tạo bảng Staff
-    await createStaffTable();
-
-    // Tạo bảng Users trước vì Tables phụ thuộc vào nó
     await createUserTable();
-
-    // Tạo bảng Tables
-    await createTable();
+    await createUserRoleTable();
+    await createCategoryTable();
+    await createProductTable();
+    await createOrderTable();
+    await createOrderDetailTable();
 
     console.log("Tất cả các bảng đã được tạo thành công!");
   } catch (err) {

@@ -1,14 +1,7 @@
-CREATE DATABASE DA_QLNH
+CREATE DATABASE DA_QLBH
 
 GO
 
-USE DA_QLNH
+USE DA_QLBH
 
 GO
-
-INSERT INTO Tables(Name) VALUES
-('Bàn số 1'),
-('Bàn số 2'),
-('Bàn số 3')
-
-go

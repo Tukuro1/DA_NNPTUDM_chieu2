@@ -4,7 +4,7 @@ const config = {
   user: "sa",
   password: "1",
   server: "DESKTOP-996V6GP", // hoặc localhost\\SQLEXPRESS nếu là instance
-  database: "DA_QLNH",
+  database: "DA_QLBH",
   options: {
     encrypt: true, // Bật mã hóa
     trustServerCertificate: true, // Chấp nhận chứng chỉ tự ký

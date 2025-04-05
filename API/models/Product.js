@@ -10,6 +10,8 @@ const createProductTable = async () => {
       Price DECIMAL(10, 2) NOT NULL,
       Stock INT NOT NULL,
       ImageURL NVARCHAR(255),
+      Size NVARCHAR(50), -- Thêm kích thước
+      Color NVARCHAR(50), -- Thêm màu sắc
       CategoryID INT FOREIGN KEY REFERENCES Categories(CategoryID),
       CreatedAt DATETIME DEFAULT GETDATE()
     );

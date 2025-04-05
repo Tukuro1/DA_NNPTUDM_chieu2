@@ -1,5 +1,7 @@
 const { createTable } = require("./models/Tables");
 const { createUserTable } = require("./models/User");
+const { createUserTable } = require("./models/Staff");
+const { createUserTable } = require("./models/Role");
 
 (async () => {
   try {

@@ -1,14 +1,5 @@
-var express = require("express");
-var app = express(); // Sử dụng express trực tiếp nếu không có app.js
-var bodyParser = require("body-parser");
-
-// Sử dụng body-parser để parse JSON
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// Định nghĩa các route sau middleware body-parser
-const productRoutes = require("./routes/products");
-app.use("/products", productRoutes);
+const express = require("express");
+const app = require("./app"); // Import ứng dụng từ app.js
 
 // Mở cổng server
 app.listen(3000, function () {

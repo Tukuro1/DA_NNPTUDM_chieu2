@@ -5,36 +5,51 @@ const { createCategoryTable } = require("./models/Category");
 const { createProductTable } = require("./models/Product");
 const { createOrderTable } = require("./models/Order");
 const { createOrderDetailTable } = require("./models/OrderDetail");
-const { conn } = require("./dbConnection");
+const { conn } = require("./config/connect");
 
-const checkAndCreateTable = async (createTableFn, tableName) => {
+async function createTableIfNotExists(createTableFunction, tableName) {
   try {
-    const pool = await conn;
-    const result = await pool.request().query(
-      `IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='${tableName}' AND xtype='U')
-         BEGIN
-           EXEC sp_executesql N'${createTableFn.toString()}'
-         END`
-    );
-    console.log(`Bảng ${tableName} đã được kiểm tra và tạo nếu cần.`);
+    console.log(`Đang kiểm tra và tạo bảng ${tableName} nếu chưa tồn tại...`);
+    await createTableFunction();
+    console.log(`Bảng ${tableName} đã được tạo thành công (hoặc đã tồn tại).`);
   } catch (err) {
-    console.error(`Lỗi khi kiểm tra hoặc tạo bảng ${tableName}:`, err);
+    if (
+      err.originalError &&
+      err.originalError.message.includes(
+        `There is already an object named '${tableName}'`
+      )
+    ) {
+      console.log(`Bảng ${tableName} đã tồn tại, bỏ qua việc tạo.`);
+    } else {
+      throw err;
+    }
   }
-};
+}
 
-// Sử dụng hàm checkAndCreateTable
 (async () => {
   try {
-    await checkAndCreateTable(createRoleTable, "Roles");
-    await checkAndCreateTable(createUserTable, "Users");
-    await checkAndCreateTable(createUserRoleTable, "UserRoles");
-    await checkAndCreateTable(createCategoryTable, "Categories");
-    await checkAndCreateTable(createProductTable, "Products");
-    await checkAndCreateTable(createOrderTable, "Orders");
-    await checkAndCreateTable(createOrderDetailTable, "OrderDetails");
+    console.log("Bắt đầu tạo các bảng trong cơ sở dữ liệu...");
+
+    // Kết nối cơ sở dữ liệu
+    const pool = await conn;
+
+    // Tạo các bảng
+    await createTableIfNotExists(createRoleTable, "Roles");
+    await createTableIfNotExists(createUserTable, "Users");
+    await createTableIfNotExists(createUserRoleTable, "UserRoles");
+    await createTableIfNotExists(createCategoryTable, "Categories");
+    await createTableIfNotExists(createProductTable, "Products");
+    await createTableIfNotExists(createOrderTable, "Orders");
+    await createTableIfNotExists(createOrderDetailTable, "OrderDetails");
 
     console.log("Tất cả các bảng đã được kiểm tra và tạo thành công!");
   } catch (err) {
-    console.error("Lỗi khi chạy init.js:", err);
+    console.error("Đã xảy ra lỗi khi tạo các bảng:", err);
+  } finally {
+    // Đóng kết nối cơ sở dữ liệu
+    if (conn) {
+      conn.then((pool) => pool.close());
+      console.log("Đã đóng kết nối cơ sở dữ liệu.");
+    }
   }
 })();

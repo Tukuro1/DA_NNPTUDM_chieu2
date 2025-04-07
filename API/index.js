@@ -16,16 +16,6 @@ conn
       console.log("POST thêm sản phẩm mới: http://localhost:3000/products");
       console.log("PUT cập nhật sản phẩm: http://localhost:3000/products/:id");
       console.log("DELETE xóa sản phẩm: http://localhost:3000/products/:id");
-
-      // Các đường link truy cập categories
-      console.log("-------------------------------------");
-      console.log("GET tất cả danh mục: http://localhost:3000/categories");
-      console.log("GET danh mục theo ID: http://localhost:3000/categories/:id");
-      console.log("POST thêm danh mục mới: http://localhost:3000/categories");
-      console.log(
-        "PUT cập nhật danh mục: http://localhost:3000/categories/:id"
-      );
-      console.log("DELETE xóa danh mục: http://localhost:3000/categories/:id");
     });
   })
   .catch((err) => {

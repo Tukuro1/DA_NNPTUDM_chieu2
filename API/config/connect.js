@@ -3,7 +3,7 @@ const sql = require("mssql");
 const config = {
   user: "sa",
   password: "1",
-  server: "MSI", // hoặc localhost\\SQLEXPRESS nếu là instance
+  server: "DESKTOP-996V6GP", // hoặc localhost\\SQLEXPRESS nếu là instance
   database: "DA_QLBH",
   options: {
     encrypt: true, // Bật mã hóa

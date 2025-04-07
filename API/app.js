@@ -1,23 +1,27 @@
 const express = require("express");
-const app = express(); // Khởi tạo ứng dụng Express
-var bodyParser = require("body-parser");
+const app = express();
+const bodyParser = require("body-parser");
+const path = require("path");
 
-const homeRoutes = require("./routes/home");
-app.use("/", homeRoutes);
-
-const categoriesRouter = require("./routes/categories");
-app.use("/categories", categoriesRouter);
-
-const productsRouter = require("./routes/products");
-app.use("/products", productsRouter);
-
-const usersRouter = require("./routes/users");
-app.use("/users", usersRouter);
-
-const rolesRouter = require("./routes/roles");
-app.use("/roles", rolesRouter);
-// Sử dụng body-parser để parse JSON
+// Sử dụng body-parser để parse JSON và form data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-module.exports = app; // Xuất ứng dụng để sử dụng trong index.js
+// Cấu hình thư mục tĩnh cho CSS, JS, hình ảnh
+app.use(express.static(path.join(__dirname, "public")));
+
+// Import các route
+const homeRoutes = require("./routes/home");
+const categoriesRouter = require("./routes/categories");
+const productsRouter = require("./routes/products");
+const usersRouter = require("./routes/users");
+const rolesRouter = require("./routes/roles");
+
+// Sử dụng các route
+app.use("/", homeRoutes);
+app.use("/categories", categoriesRouter);
+app.use("/products", productsRouter);
+app.use("/users", usersRouter);
+app.use("/roles", rolesRouter);
+
+module.exports = app;

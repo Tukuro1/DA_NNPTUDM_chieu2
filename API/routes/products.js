@@ -17,16 +17,24 @@ router.get("/", async (req, res) => {
 // Định nghĩa route GET /products/:id (Read a single product by ID)
 router.get("/:id", async (req, res) => {
   try {
+    const productId = parseInt(req.params.id, 10); // Chuyển đổi id thành số nguyên
+    if (isNaN(productId)) {
+      console.log(`ID không hợp lệ: ${req.params.id}`);
+      return res.status(400).send("ID sản phẩm không hợp lệ");
+    }
+
     const pool = await conn;
     const result = await pool
       .request()
-      .input("ProductID", sql.Int, req.params.id)
+      .input("ProductID", sql.Int, productId) // Sử dụng productId đã được xác thực
       .query("SELECT * FROM Products WHERE ProductID = @ProductID");
+
     if (result.recordset.length === 0) {
-      console.log(`Không tìm thấy sản phẩm với ID: ${req.params.id}`);
+      console.log(`Không tìm thấy sản phẩm với ID: ${productId}`);
       return res.status(404).send("Sản phẩm không tồn tại");
     }
-    console.log(`Lấy thông tin sản phẩm với ID: ${req.params.id}`);
+
+    console.log(`Lấy thông tin sản phẩm với ID: ${productId}`);
     res.json(result.recordset[0]);
   } catch (err) {
     console.error("Lỗi khi lấy sản phẩm:", err);
@@ -123,21 +131,29 @@ router.put("/:id", async (req, res) => {
 });
 
 // Định nghĩa route DELETE /products/:id (Delete a product by ID)
-router.delete("/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
+    const productId = parseInt(req.params.id, 10); // Chuyển đổi id thành số nguyên
+    if (isNaN(productId)) {
+      console.log(`ID không hợp lệ: ${req.params.id}`);
+      return res.status(400).send("ID sản phẩm không hợp lệ");
+    }
+
     const pool = await conn;
     const result = await pool
       .request()
-      .input("ProductID", sql.Int, req.params.id)
-      .query("DELETE FROM Products WHERE ProductID = @ProductID");
-    if (result.rowsAffected[0] === 0) {
-      console.log(`Không tìm thấy sản phẩm với ID: ${req.params.id} để xóa`);
+      .input("ProductID", sql.Int, productId) // Sử dụng productId đã được xác thực
+      .query("SELECT * FROM Products WHERE ProductID = @ProductID");
+
+    if (result.recordset.length === 0) {
+      console.log(`Không tìm thấy sản phẩm với ID: ${productId}`);
       return res.status(404).send("Sản phẩm không tồn tại");
     }
-    console.log(`Xóa sản phẩm với ID: ${req.params.id}`);
-    res.send("Sản phẩm đã được xóa thành công");
+
+    console.log(`Lấy thông tin sản phẩm với ID: ${productId}`);
+    res.json(result.recordset[0]);
   } catch (err) {
-    console.error("Lỗi khi xóa sản phẩm:", err);
+    console.error("Lỗi khi lấy sản phẩm:", err);
     res.status(500).send("Lỗi server");
   }
 });

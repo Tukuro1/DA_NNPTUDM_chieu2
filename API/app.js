@@ -11,6 +11,11 @@ app.use("/categories", categoriesRouter);
 const productsRouter = require("./routes/products");
 app.use("/products", productsRouter);
 
+const usersRouter = require("./routes/users");
+app.use("/users", usersRouter);
+
+const rolesRouter = require("./routes/roles");
+app.use("/roles", rolesRouter);
 // Sử dụng body-parser để parse JSON
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

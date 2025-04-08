@@ -43,6 +43,13 @@ conn
         "PUT cập nhật số lượng sản phẩm trong giỏ hàng: http://localhost:3000/cart/:id(CartItemID)"
       );
       console.log("POST thanh toán: http://localhost:3000/cart/checkout");
+
+      // Các đường link truy cập chức năng admin
+      console.log("-------------------------------------");
+      console.log("Các đường dẫn API: chức năng admin");
+      console.log(
+        "GET danh sách tất cả người dùng: http://localhost:3000/admin/users"
+      );
     });
   })
   .catch((err) => {

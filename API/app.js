@@ -28,9 +28,11 @@ app.use("/cart", cartRouter);
 const adminHomeRouter = require("./routes/admin/adminHome");
 const adminCategoriesRouter = require("./routes/admin/adminCategories");
 const adminProductsRouter = require("./routes/admin/adminProducts");
+const adminUserRoutes = require("./routes/admin/adminUser");
 
 // Sử dụng các route admin
 app.use("/admin", adminHomeRouter);
 app.use("/admin/categories", adminCategoriesRouter);
 app.use("/admin/products", adminProductsRouter);
+app.use("/admin/users", adminUserRoutes);
 module.exports = app;

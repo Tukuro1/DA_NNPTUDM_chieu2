@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { conn, sql } = require("../../config/connect");
+const { authenticateToken } = require("../../middlewares/authMiddleware");
 
 // Lấy danh sách danh mục
 router.get("/", authenticateToken, async (req, res) => {

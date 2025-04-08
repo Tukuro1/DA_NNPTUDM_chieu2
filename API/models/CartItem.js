@@ -1,11 +1,11 @@
 const { conn, sql } = require("../config/connect");
 
-const createOrderDetailTable = async () => {
+const createCartItemTable = async () => {
   const pool = await conn;
   const query = `
-    CREATE TABLE OrderDetails (
-      OrderDetailID INT PRIMARY KEY IDENTITY(1,1),
-      OrderID INT FOREIGN KEY REFERENCES Orders(OrderID),
+    CREATE TABLE CartItem (
+      CartItemID INT PRIMARY KEY IDENTITY(1,1),
+      CartID INT FOREIGN KEY REFERENCES Cart(CartID),
       ProductID INT FOREIGN KEY REFERENCES Products(ProductID),
       Quantity INT NOT NULL,
       UnitPrice DECIMAL(10, 2) NOT NULL,
@@ -13,7 +13,7 @@ const createOrderDetailTable = async () => {
     );
   `;
   await pool.request().query(query);
-  console.log("Bảng OrderDetails đã được tạo thành công.");
+  console.log("Bảng CartItem đã được tạo thành công.");
 };
 
-module.exports = { createOrderDetailTable };
+module.exports = { createCartItemTable };

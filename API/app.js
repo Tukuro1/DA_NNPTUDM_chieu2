@@ -15,12 +15,14 @@ const homeRoutes = require("./routes/home");
 const categoriesRouter = require("./routes/categories");
 const productsRouter = require("./routes/products");
 const authRouter = require("./routes/auth");
+const cartRouter = require("./routes/cart");
 
 // Sử dụng các route
 app.use("/", homeRoutes);
 app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
 app.use("/", authRouter);
+app.use("/cart", cartRouter);
 
 // Import các route admin
 const adminHomeRouter = require("./routes/admin/adminHome");

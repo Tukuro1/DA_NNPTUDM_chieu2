@@ -3,8 +3,8 @@ const { createUserTable } = require("./models/User");
 const { createUserRoleTable } = require("./models/UserRole");
 const { createCategoryTable } = require("./models/Category");
 const { createProductTable } = require("./models/Product");
-const { createOrderTable } = require("./models/Order");
-const { createOrderDetailTable } = require("./models/OrderDetail");
+const { createCartTable } = require("./models/Cart");
+const { createCartItemTable } = require("./models/CartItem");
 const { conn } = require("./config/connect");
 
 async function createTableIfNotExists(createTableFunction, tableName) {
@@ -39,8 +39,8 @@ async function createTableIfNotExists(createTableFunction, tableName) {
     await createTableIfNotExists(createUserRoleTable, "UserRoles");
     await createTableIfNotExists(createCategoryTable, "Categories");
     await createTableIfNotExists(createProductTable, "Products");
-    await createTableIfNotExists(createOrderTable, "Orders");
-    await createTableIfNotExists(createOrderDetailTable, "OrderDetails");
+    await createTableIfNotExists(createCartTable, "Carts");
+    await createTableIfNotExists(createCartItemTable, "CartItems");
 
     console.log("Tất cả các bảng đã được kiểm tra và tạo thành công!");
   } catch (err) {

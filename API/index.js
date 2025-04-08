@@ -16,6 +16,12 @@ conn
       console.log("POST thêm sản phẩm mới: http://localhost:3000/products");
       console.log("PUT cập nhật sản phẩm: http://localhost:3000/products/:id");
       console.log("DELETE xóa sản phẩm: http://localhost:3000/products/:id");
+
+      // Các đường link truy cập login-register
+      console.log("-------------------------------------");
+      console.log("Các đường dẫn API:");
+      console.log("POST đăng nhập: http://localhost:3000/login");
+      console.log("POST đăng ký: http://localhost:3000/register");
     });
   })
   .catch((err) => {

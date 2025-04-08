@@ -1,0 +1,27 @@
+Ví dụ về dữ liệu sản phẩm
+  {
+    "Name": "Price b",
+    "Description": "Description of Product A",
+    "Price": 100,
+    "Stock": 11,
+    "ImageURL": "http://example.com/image.jpg",
+    "Size": "M",
+    "Color": "Red",
+    "CategoryID": 1
+  }
+
+Ví dụ về dữ liệu đăng ký tài khoản
+{
+  "Username": "newuser",
+  "Password": "password123",
+  "Email": "newuser@example.com",
+  "FullName": "New User",
+  "Phone": "0123456789",
+  "Address": "123 Main Street"
+}
+
+Ví dụ về dữ liệu đăng nhập
+{
+  "Username": "admin",
+  "Password": "admin123"
+}

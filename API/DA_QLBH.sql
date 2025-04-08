@@ -13,6 +13,8 @@ VALUES
 ('Giày', 'Danh mục các loại giày'),
 ('Phụ kiện', 'Danh mục các loại phụ kiện');
 
+GO
+
 -- Thêm dữ liệu vào bảng Products
 INSERT INTO Products (Name, Description, Price, Stock, ImageURL, Size, Color, CategoryID)
 VALUES 
@@ -21,3 +23,23 @@ VALUES
 ('Quần jean xanh', 'Quần jean xanh thời trang', 350000, 30, 'https://example.com/images/quan-jean-xanh.jpg', '32', 'Xanh', 2),
 ('Giày thể thao', 'Giày thể thao năng động', 500000, 20, 'https://example.com/images/giay-the-thao.jpg', '42', 'Trắng', 3),
 ('Mũ lưỡi trai', 'Mũ lưỡi trai thời trang', 100000, 70, 'https://example.com/images/mu-luoi-trai.jpg', 'Free Size', 'Đen', 4);
+
+GO
+
+-- Thêm dữ liệu vào bảng roles
+INSERT INTO Roles (RoleName, Description)
+VALUES 
+('Admin', 'Quản trị viên hệ thống'),
+('User', 'Người dùng bình thường');
+
+-- Thêm dữ liệu vào bảng Users
+INSERT INTO Users (Username, Password, Email, Phone, Address)
+VALUES
+('admin', 'admin123', 'admin@example.com', '0123456789', '123 Admin St.'),
+('user', 'user123', 'user@example.com', '0987654321', '456 User Ave.');
+
+-- Thêm dữ liệu vào bảng UserRoles
+INSERT INTO UserRoles (UserID, RoleID)
+VALUES
+(1, 1), -- Admin
+(2, 2); -- User

@@ -35,108 +35,108 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Thêm sản phẩm mới
-router.post("/", async (req, res) => {
-  try {
-    const {
-      Name,
-      Description,
-      Price,
-      Stock,
-      ImageURL,
-      Size,
-      Color,
-      CategoryID,
-    } = req.body;
+// // Thêm sản phẩm mới
+// router.post("/", async (req, res) => {
+//   try {
+//     const {
+//       Name,
+//       Description,
+//       Price,
+//       Stock,
+//       ImageURL,
+//       Size,
+//       Color,
+//       CategoryID,
+//     } = req.body;
 
-    if (!Name || !Price || !Stock || !CategoryID) {
-      return res.status(400).send("Thiếu thông tin sản phẩm");
-    }
+//     if (!Name || !Price || !Stock || !CategoryID) {
+//       return res.status(400).send("Thiếu thông tin sản phẩm");
+//     }
 
-    const pool = await conn;
-    await pool
-      .request()
-      .input("Name", sql.NVarChar, Name)
-      .input("Description", sql.NVarChar, Description)
-      .input("Price", sql.Decimal(10, 2), Price)
-      .input("Stock", sql.Int, Stock)
-      .input("ImageURL", sql.NVarChar, ImageURL)
-      .input("Size", sql.NVarChar, Size)
-      .input("Color", sql.NVarChar, Color)
-      .input("CategoryID", sql.Int, CategoryID)
-      .query(
-        `INSERT INTO Products (Name, Description, Price, Stock, ImageURL, Size, Color, CategoryID)
-         VALUES (@Name, @Description, @Price, @Stock, @ImageURL, @Size, @Color, @CategoryID)`
-      );
+//     const pool = await conn;
+//     await pool
+//       .request()
+//       .input("Name", sql.NVarChar, Name)
+//       .input("Description", sql.NVarChar, Description)
+//       .input("Price", sql.Decimal(10, 2), Price)
+//       .input("Stock", sql.Int, Stock)
+//       .input("ImageURL", sql.NVarChar, ImageURL)
+//       .input("Size", sql.NVarChar, Size)
+//       .input("Color", sql.NVarChar, Color)
+//       .input("CategoryID", sql.Int, CategoryID)
+//       .query(
+//         `INSERT INTO Products (Name, Description, Price, Stock, ImageURL, Size, Color, CategoryID)
+//          VALUES (@Name, @Description, @Price, @Stock, @ImageURL, @Size, @Color, @CategoryID)`
+//       );
 
-    res.status(201).send("Sản phẩm đã được thêm thành công");
-  } catch (err) {
-    console.error("Lỗi khi thêm sản phẩm:", err);
-    res.status(500).send("Lỗi server");
-  }
-});
+//     res.status(201).send("Sản phẩm đã được thêm thành công");
+//   } catch (err) {
+//     console.error("Lỗi khi thêm sản phẩm:", err);
+//     res.status(500).send("Lỗi server");
+//   }
+// });
 
-// Cập nhật sản phẩm
-router.put("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      Name,
-      Description,
-      Price,
-      Stock,
-      ImageURL,
-      Size,
-      Color,
-      CategoryID,
-    } = req.body;
+// // Cập nhật sản phẩm
+// router.put("/:id", async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const {
+//       Name,
+//       Description,
+//       Price,
+//       Stock,
+//       ImageURL,
+//       Size,
+//       Color,
+//       CategoryID,
+//     } = req.body;
 
-    if (!Name || !Price || !Stock || !CategoryID) {
-      return res.status(400).send("Thiếu thông tin sản phẩm");
-    }
+//     if (!Name || !Price || !Stock || !CategoryID) {
+//       return res.status(400).send("Thiếu thông tin sản phẩm");
+//     }
 
-    const pool = await conn;
-    await pool
-      .request()
-      .input("ID", sql.Int, id)
-      .input("Name", sql.NVarChar, Name)
-      .input("Description", sql.NVarChar, Description)
-      .input("Price", sql.Decimal(10, 2), Price)
-      .input("Stock", sql.Int, Stock)
-      .input("ImageURL", sql.NVarChar, ImageURL)
-      .input("Size", sql.NVarChar, Size)
-      .input("Color", sql.NVarChar, Color)
-      .input("CategoryID", sql.Int, CategoryID)
-      .query(
-        `UPDATE Products
-         SET Name = @Name, Description = @Description, Price = @Price, Stock = @Stock,
-             ImageURL = @ImageURL, Size = @Size, Color = @Color, CategoryID = @CategoryID
-         WHERE ID = @ID`
-      );
+//     const pool = await conn;
+//     await pool
+//       .request()
+//       .input("ID", sql.Int, id)
+//       .input("Name", sql.NVarChar, Name)
+//       .input("Description", sql.NVarChar, Description)
+//       .input("Price", sql.Decimal(10, 2), Price)
+//       .input("Stock", sql.Int, Stock)
+//       .input("ImageURL", sql.NVarChar, ImageURL)
+//       .input("Size", sql.NVarChar, Size)
+//       .input("Color", sql.NVarChar, Color)
+//       .input("CategoryID", sql.Int, CategoryID)
+//       .query(
+//         `UPDATE Products
+//          SET Name = @Name, Description = @Description, Price = @Price, Stock = @Stock,
+//              ImageURL = @ImageURL, Size = @Size, Color = @Color, CategoryID = @CategoryID
+//          WHERE ID = @ID`
+//       );
 
-    res.send("Sản phẩm đã được cập nhật thành công");
-  } catch (err) {
-    console.error("Lỗi khi cập nhật sản phẩm:", err);
-    res.status(500).send("Lỗi server");
-  }
-});
+//     res.send("Sản phẩm đã được cập nhật thành công");
+//   } catch (err) {
+//     console.error("Lỗi khi cập nhật sản phẩm:", err);
+//     res.status(500).send("Lỗi server");
+//   }
+// });
 
-// Xóa sản phẩm
-router.delete("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
+// // Xóa sản phẩm
+// router.delete("/:id", async (req, res) => {
+//   try {
+//     const { id } = req.params;
 
-    const pool = await conn;
-    await pool
-      .request()
-      .input("ID", sql.Int, id)
-      .query("DELETE FROM Products WHERE ProductID = @ID");
+//     const pool = await conn;
+//     await pool
+//       .request()
+//       .input("ID", sql.Int, id)
+//       .query("DELETE FROM Products WHERE ProductID = @ID");
 
-    res.send("Sản phẩm đã được xóa thành công");
-  } catch (err) {
-    console.error("Lỗi khi xóa sản phẩm:", err);
-    res.status(500).send("Lỗi server");
-  }
-});
+//     res.send("Sản phẩm đã được xóa thành công");
+//   } catch (err) {
+//     console.error("Lỗi khi xóa sản phẩm:", err);
+//     res.status(500).send("Lỗi server");
+//   }
+// });
 
 module.exports = router;

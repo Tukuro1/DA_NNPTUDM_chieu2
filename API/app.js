@@ -14,9 +14,21 @@ app.use(express.static(path.join(__dirname, "public")));
 const homeRoutes = require("./routes/home");
 const categoriesRouter = require("./routes/categories");
 const productsRouter = require("./routes/products");
+const authRouter = require("./routes/auth");
 
 // Sử dụng các route
 app.use("/", homeRoutes);
 app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
+app.use("/", authRouter);
+
+// Import các route admin
+const adminHomeRouter = require("./routes/admin/adminHome");
+const adminCategoriesRouter = require("./routes/admin/adminCategories");
+const adminProductsRouter = require("./routes/admin/adminProducts");
+
+// Sử dụng các route admin
+app.use("/admin", adminHomeRouter);
+app.use("/admin/categories", adminCategoriesRouter);
+app.use("/admin/products", adminProductsRouter);
 module.exports = app;

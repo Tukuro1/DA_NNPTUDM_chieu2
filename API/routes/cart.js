@@ -47,43 +47,34 @@ router.post("/", authenticateToken, async (req, res) => {
 
     const pool = await conn;
 
-    // Lấy đơn hàng "Pending" của người dùng
-    let order = await pool
+    // Lấy giỏ hàng của người dùng
+    let cart = await pool
       .request()
       .input("UserID", sql.Int, userId)
-      .input("Status", sql.NVarChar, "Pending")
-      .query(
-        "SELECT * FROM Orders WHERE UserID = @UserID AND Status = @Status"
-      );
+      .query("SELECT * FROM Cart WHERE UserID = @UserID");
 
-    if (order.recordset.length === 0) {
-      // Tạo đơn hàng mới nếu chưa có
+    if (cart.recordset.length === 0) {
+      // Tạo giỏ hàng mới nếu chưa có
       await pool
         .request()
         .input("UserID", sql.Int, userId)
-        .input("TotalAmount", sql.Decimal(10, 2), 0)
-        .query(
-          "INSERT INTO Orders (UserID, TotalAmount, Status) VALUES (@UserID, @TotalAmount, 'Pending')"
-        );
+        .query("INSERT INTO Cart (UserID) VALUES (@UserID)");
 
-      order = await pool
+      cart = await pool
         .request()
         .input("UserID", sql.Int, userId)
-        .input("Status", sql.NVarChar, "Pending")
-        .query(
-          "SELECT * FROM Orders WHERE UserID = @UserID AND Status = @Status"
-        );
+        .query("SELECT * FROM Cart WHERE UserID = @UserID");
     }
 
-    const orderId = order.recordset[0].OrderID;
+    const cartId = cart.recordset[0].CartID;
 
     // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
     const existingItem = await pool
       .request()
-      .input("OrderID", sql.Int, orderId)
+      .input("CartID", sql.Int, cartId)
       .input("ProductID", sql.Int, ProductID)
       .query(
-        "SELECT * FROM OrderDetails WHERE OrderID = @OrderID AND ProductID = @ProductID"
+        "SELECT * FROM CartItem WHERE CartID = @CartID AND ProductID = @ProductID"
       );
 
     if (existingItem.recordset.length > 0) {
@@ -92,14 +83,10 @@ router.post("/", authenticateToken, async (req, res) => {
 
       await pool
         .request()
-        .input(
-          "OrderDetailID",
-          sql.Int,
-          existingItem.recordset[0].OrderDetailID
-        )
+        .input("CartItemID", sql.Int, existingItem.recordset[0].CartItemID)
         .input("Quantity", sql.Int, newQuantity)
         .query(
-          "UPDATE OrderDetails SET Quantity = @Quantity WHERE OrderDetailID = @OrderDetailID"
+          "UPDATE CartItem SET Quantity = @Quantity WHERE CartItemID = @CartItemID"
         );
 
       return res.status(200).send("Cập nhật số lượng sản phẩm trong giỏ hàng.");
@@ -119,13 +106,13 @@ router.post("/", authenticateToken, async (req, res) => {
 
     await pool
       .request()
-      .input("OrderID", sql.Int, orderId)
+      .input("CartID", sql.Int, cartId)
       .input("ProductID", sql.Int, ProductID)
       .input("Quantity", sql.Int, Quantity)
       .input("UnitPrice", sql.Decimal(10, 2), unitPrice)
       .query(
-        `INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice)
-         VALUES (@OrderID, @ProductID, @Quantity, @UnitPrice)`
+        `INSERT INTO CartItem (CartID, ProductID, Quantity, UnitPrice)
+         VALUES (@CartID, @ProductID, @Quantity, @UnitPrice)`
       );
 
     res.status(201).send("Sản phẩm đã được thêm vào giỏ hàng.");
@@ -138,17 +125,133 @@ router.post("/", authenticateToken, async (req, res) => {
 // Xóa sản phẩm khỏi giỏ hàng
 router.delete("/:id", authenticateToken, async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params; // id là CartItemID
+    const userId = req.user.UserID;
 
     const pool = await conn;
+
+    // Kiểm tra xem sản phẩm có tồn tại trong giỏ hàng của người dùng không
+    const cartItem = await pool
+      .request()
+      .input("CartItemID", sql.Int, id)
+      .query(
+        `SELECT ci.CartItemID
+         FROM CartItem ci
+         JOIN Cart c ON ci.CartID = c.CartID
+         WHERE ci.CartItemID = @CartItemID AND c.UserID = ${userId}`
+      );
+
+    if (cartItem.recordset.length === 0) {
+      return res
+        .status(404)
+        .send("Sản phẩm không tồn tại trong giỏ hàng của bạn.");
+    }
+
+    // Xóa sản phẩm khỏi giỏ hàng
     await pool
       .request()
       .input("CartItemID", sql.Int, id)
       .query("DELETE FROM CartItem WHERE CartItemID = @CartItemID");
 
-    res.send("Sản phẩm đã được xóa khỏi giỏ hàng.");
+    res.status(200).send("Sản phẩm đã được xóa khỏi giỏ hàng.");
   } catch (err) {
     console.error("Lỗi khi xóa sản phẩm khỏi giỏ hàng:", err);
+    res.status(500).send("Lỗi server");
+  }
+});
+
+// Cập nhật số lượng sản phẩm trong giỏ hàng
+router.put("/:id", authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params; // id là CartItemID
+    const { Quantity } = req.body; // Số lượng mới
+    const userId = req.user.UserID;
+
+    if (!Quantity || Quantity < 1) {
+      return res.status(400).send("Số lượng phải lớn hơn hoặc bằng 1.");
+    }
+
+    const pool = await conn;
+
+    // Kiểm tra xem sản phẩm có tồn tại trong giỏ hàng của người dùng không
+    const cartItem = await pool
+      .request()
+      .input("CartItemID", sql.Int, id)
+      .query(
+        `SELECT ci.CartItemID
+         FROM CartItem ci
+         JOIN Cart c ON ci.CartID = c.CartID
+         WHERE ci.CartItemID = @CartItemID AND c.UserID = ${userId}`
+      );
+
+    if (cartItem.recordset.length === 0) {
+      return res
+        .status(404)
+        .send("Sản phẩm không tồn tại trong giỏ hàng của bạn.");
+    }
+
+    // Cập nhật số lượng sản phẩm
+    await pool
+      .request()
+      .input("CartItemID", sql.Int, id)
+      .input("Quantity", sql.Int, Quantity)
+      .query(
+        "UPDATE CartItem SET Quantity = @Quantity WHERE CartItemID = @CartItemID"
+      );
+
+    res.status(200).send("Số lượng sản phẩm đã được cập nhật.");
+  } catch (err) {
+    console.error("Lỗi khi cập nhật số lượng sản phẩm:", err);
+    res.status(500).send("Lỗi server");
+  }
+});
+
+// Thanh toán giỏ hàng
+router.post("/checkout", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.UserID;
+
+    const pool = await conn;
+
+    // Lấy giỏ hàng của người dùng
+    const cart = await pool
+      .request()
+      .input("UserID", sql.Int, userId)
+      .query("SELECT * FROM Cart WHERE UserID = @UserID");
+
+    if (cart.recordset.length === 0) {
+      return res.status(404).send("Giỏ hàng trống, không thể thanh toán.");
+    }
+
+    const cartId = cart.recordset[0].CartID;
+
+    // Lấy các sản phẩm trong giỏ hàng
+    const cartItems = await pool
+      .request()
+      .input("CartID", sql.Int, cartId)
+      .query("SELECT * FROM CartItem WHERE CartID = @CartID");
+
+    if (cartItems.recordset.length === 0) {
+      return res.status(404).send("Giỏ hàng trống, không thể thanh toán.");
+    }
+
+    // Tính tổng tiền
+    const totalAmount = cartItems.recordset.reduce(
+      (sum, item) => sum + item.Quantity * item.UnitPrice,
+      0
+    );
+
+    // Xóa các sản phẩm trong giỏ hàng
+    await pool
+      .request()
+      .input("CartID", sql.Int, cartId)
+      .query("DELETE FROM CartItem WHERE CartID = @CartID");
+
+    res
+      .status(200)
+      .send(`Thanh toán thành công. Tổng tiền: ${totalAmount} VND`);
+  } catch (err) {
+    console.error("Lỗi khi thanh toán:", err);
     res.status(500).send("Lỗi server");
   }
 });

@@ -25,3 +25,18 @@ Ví dụ về dữ liệu đăng nhập
   "Username": "admin",
   "Password": "admin123"
 }
+{
+  "Username": "user",
+  "Password": "user123"
+}
+
+Ví dụ về dữ liệu đặt hàng
+{
+  "ProductID": 1,
+  "Quantity": 2
+}
+
+Ví dụ về tăng giảm sl sản phẩm trong giỏ hang
+{
+  "Quantity": 5
+}

@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { conn, sql } = require("../config/connect");
+const { authenticateToken } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 const SECRET_KEY = "your_secret_key"; // Thay bằng khóa bí mật của bạn
@@ -125,6 +126,67 @@ router.post("/login", async (req, res) => {
     res.json({ token });
   } catch (err) {
     console.error("Lỗi khi đăng nhập:", err);
+    res.status(500).send("Lỗi server");
+  }
+});
+
+// Lấy thông tin cá nhân
+router.get("/profile", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.UserID;
+
+    const pool = await conn;
+
+    const user = await pool
+      .request()
+      .input("UserID", sql.Int, userId)
+      .query(
+        "SELECT UserID, Username, Email, FullName, Phone, Address FROM Users WHERE UserID = @UserID"
+      );
+
+    if (user.recordset.length === 0) {
+      return res.status(404).send("Không tìm thấy thông tin người dùng");
+    }
+
+    res.json(user.recordset[0]);
+  } catch (err) {
+    console.error("Lỗi khi lấy thông tin cá nhân:", err);
+    res.status(500).send("Lỗi server");
+  }
+});
+
+// Cập nhật thông tin cá nhân
+router.put("/profile", authenticateToken, async (req, res) => {
+  try {
+    const { Email, FullName, Phone, Address } = req.body;
+    const userId = req.user.UserID;
+
+    if (!FullName && !Phone && !Address) {
+      return res.status(400).send("Không có thông tin nào để cập nhật");
+    }
+
+    const pool = await conn;
+
+    // Cập nhật thông tin người dùng
+    await pool
+      .request()
+      .input("UserID", sql.Int, userId)
+      .input("Email", sql.NVarChar, Email || null)
+      .input("FullName", sql.NVarChar, FullName || null)
+      .input("Phone", sql.NVarChar, Phone || null)
+      .input("Address", sql.NVarChar, Address || null)
+      .query(
+        `UPDATE Users
+         SET Email = ISNULL(@Email, Email),
+             FullName = ISNULL(@FullName, FullName),
+             Phone = ISNULL(@Phone, Phone),
+             Address = ISNULL(@Address, Address)
+         WHERE UserID = @UserID`
+      );
+
+    res.status(200).send("Thông tin cá nhân đã được cập nhật thành công");
+  } catch (err) {
+    console.error("Lỗi khi cập nhật thông tin cá nhân:", err);
     res.status(500).send("Lỗi server");
   }
 });

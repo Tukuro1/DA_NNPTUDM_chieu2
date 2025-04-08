@@ -7,7 +7,7 @@ const createUserTable = async () => {
       UserID INT PRIMARY KEY IDENTITY(1,1),
       Username NVARCHAR(50) NOT NULL UNIQUE,
       Password NVARCHAR(255) NOT NULL,
-      Email NVARCHAR(100) NOT NULL UNIQUE,
+      Email NVARCHAR(100),
       FullName NVARCHAR(100),
       Phone NVARCHAR(15),
       Address NVARCHAR(255),

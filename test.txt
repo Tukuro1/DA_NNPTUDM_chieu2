@@ -40,3 +40,11 @@ Ví dụ về tăng giảm sl sản phẩm trong giỏ hang
 {
   "Quantity": 5
 }
+
+Ví dụ về dữ liệu cập nhật tt user
+{
+  "Email": "nguyenvana@example.com",
+  "FullName": "Nguyen Van A",
+  "Phone": "0123456789",
+  "Address": "123 ABC Street"
+}

@@ -22,6 +22,12 @@ conn
       console.log("Các đường dẫn API: login-register");
       console.log("POST đăng nhập: http://localhost:3000/login");
       console.log("POST đăng ký: http://localhost:3000/register");
+      console.log(
+        "GET lấy thông tin người dùng: http://localhost:3000/profile"
+      );
+      console.log(
+        "PUT cập nhật thông tin người dùng: http://localhost:3000/profile"
+      );
 
       // Các đường link truy cập giỏ hàng và thanh toán
       console.log("-------------------------------------");

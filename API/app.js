@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const path = require("path");
+const cors = require('cors');
 
 // Sử dụng body-parser để parse JSON và form data
 app.use(bodyParser.json());
@@ -9,6 +10,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Cấu hình thư mục tĩnh cho CSS, JS, hình ảnh
 app.use(express.static(path.join(__dirname, "public")));
+app.use(cors()); 
+app.use(cors({
+    origin: 'http://localhost:8080'  // Thay bằng URL của web mà bạn muốn cho phép
+  }));
 
 // Import các route
 const homeRoutes = require("./routes/home");

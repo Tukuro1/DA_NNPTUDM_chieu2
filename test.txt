@@ -48,3 +48,39 @@ Ví dụ về dữ liệu cập nhật tt user
   "Phone": "0123456789",
   "Address": "123 ABC Street"
 }
+
+Ví dụ về dữ liệu chỉnh sửa hóa đơn
+{
+  "items": [
+    {
+      "ProductID": 1,
+      "Quantity": 5,
+      "UnitPrice": 100.00
+    }
+  ]
+}
+
+Ví dụ về tạo hóa đơn mới
+{
+  "UserID": 1,
+  "TotalAmount": 1500.00,
+  "items": [
+    {
+      "ProductID": 1,
+      "Quantity": 2,
+      "UnitPrice": 1500.00
+    },
+    {
+      "ProductID": 2,
+      "Quantity": 1,
+      "UnitPrice": 500.00
+    }
+  ]
+}
+
+Ví dụ về tạo voucher
+{
+  "Code": "DISCOUNT40",
+  "DiscountPercentage": 40,
+  "ExpiryDate": "2026-1-1"
+}

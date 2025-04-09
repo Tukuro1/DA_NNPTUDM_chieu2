@@ -32,14 +32,29 @@ VALUES
 ('Admin', 'Quản trị viên hệ thống'),
 ('User', 'Người dùng bình thường');
 
+GO
+
 -- Thêm dữ liệu vào bảng Users
 INSERT INTO Users (Username, Password, Email, Phone, Address)
 VALUES
 ('admin', 'admin123', 'admin@example.com', '0123456789', '123 Admin St.'),
 ('user', 'user123', 'user@example.com', '0987654321', '456 User Ave.');
 
+GO
+
 -- Thêm dữ liệu vào bảng UserRoles
 INSERT INTO UserRoles (UserID, RoleID)
 VALUES
 (1, 1), -- Admin
 (2, 2); -- User
+
+GO
+
+-- Thêm dữ liệu vào bảng Vouchers
+INSERT INTO Vouchers (Code, DiscountPercentage, ExpiryDate, IsActive)
+VALUES 
+('VOUCHER10', 10, '2023-12-31', 1),
+('VOUCHER20', 20, '2023-12-31', 1),
+('VOUCHER30', 30, '2023-12-31', 1);
+
+GO

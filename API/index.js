@@ -13,9 +13,15 @@ conn
       console.log("Các đường dẫn API: truy cập products");
       console.log("GET tất cả sản phẩm: http://localhost:3000/products");
       console.log("GET sản phẩm theo ID: http://localhost:3000/products/:id");
-      console.log("POST thêm sản phẩm mới: http://localhost:3000/products");
-      console.log("PUT cập nhật sản phẩm: http://localhost:3000/products/:id");
-      console.log("DELETE xóa sản phẩm: http://localhost:3000/products/:id");
+      console.log(
+        "POST thêm sản phẩm mới: http://localhost:3000/admin/products"
+      );
+      console.log(
+        "PUT cập nhật sản phẩm: http://localhost:3000/admin/products/:id"
+      );
+      console.log(
+        "DELETE xóa sản phẩm: http://localhost:3000/admin/products/:id"
+      );
 
       // Các đường link truy cập login-register
       console.log("-------------------------------------");
@@ -28,7 +34,10 @@ conn
       console.log(
         "PUT cập nhật thông tin người dùng: http://localhost:3000/profile"
       );
-
+      console.log("GET lấy danh sách hóa đơn: http://localhost:3000/invoices");
+      console.log(
+        "GET lấy chi tiết hóa đơn: http://localhost:3000/invoices/:Id(invoiceId)"
+      );
       // Các đường link truy cập giỏ hàng và thanh toán
       console.log("-------------------------------------");
       console.log("Các đường dẫn API: hàng và thanh toán");
@@ -50,6 +59,24 @@ conn
       console.log(
         "GET danh sách tất cả người dùng: http://localhost:3000/admin/users"
       );
+      console.log(
+        "GET danh sách tất cả hóa đơn: http://localhost:3000/admin/invoices"
+      );
+      console.log(
+        "POST lấy chi tiết hóa đơn: http://localhost:3000/admin/invoices/:Id(invoiceId)"
+      );
+      console.log("GET tạo hóa đơn mới: http://localhost:3000/admin/invoices");
+      console.log(
+        "PUT cập nhật hóa đơn: http://localhost:3000/admin/invoices/:Id(invoiceId)"
+      );
+      console.log(
+        "DELETE xóa hóa đơn: http://localhost:3000/admin/invoices/:Id(invoiceId)"
+      );
+      console.log(
+        "GET danh sách tất cả voucher: http://localhost:3000/vouchers"
+      );
+      console.log("GET thêm voucher: http://localhost:3000/admin/vouchers");
+      console.log("POST thêm voucher: http://localhost:3000/admin/vouchers");
     });
   })
   .catch((err) => {

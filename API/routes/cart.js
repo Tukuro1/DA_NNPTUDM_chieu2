@@ -209,6 +209,7 @@ router.put("/:id", authenticateToken, async (req, res) => {
 // Thanh toán giỏ hàng
 router.post("/checkout", authenticateToken, async (req, res) => {
   try {
+    const { VoucherCode } = req.body; // Nhận mã voucher từ request
     const userId = req.user.UserID;
 
     const pool = await conn;
@@ -236,10 +237,54 @@ router.post("/checkout", authenticateToken, async (req, res) => {
     }
 
     // Tính tổng tiền
-    const totalAmount = cartItems.recordset.reduce(
+    let totalAmount = cartItems.recordset.reduce(
       (sum, item) => sum + item.Quantity * item.UnitPrice,
       0
     );
+
+    // Kiểm tra voucher
+    if (VoucherCode) {
+      const voucher = await pool
+        .request()
+        .input("Code", sql.NVarChar, VoucherCode)
+        .query(
+          `SELECT * FROM Vouchers WHERE Code = @Code AND IsActive = 1 AND ExpiryDate > GETDATE()`
+        );
+
+      if (voucher.recordset.length === 0) {
+        return res.status(400).send("Voucher không hợp lệ hoặc đã hết hạn.");
+      }
+
+      const discount = voucher.recordset[0].DiscountPercentage;
+      totalAmount = totalAmount - (totalAmount * discount) / 100;
+    }
+
+    // Tạo hóa đơn
+    const invoiceResult = await pool
+      .request()
+      .input("UserID", sql.Int, userId)
+      .input("TotalAmount", sql.Decimal(10, 2), totalAmount)
+      .query(
+        `INSERT INTO Invoices (UserID, TotalAmount) 
+         OUTPUT INSERTED.InvoiceID 
+         VALUES (@UserID, @TotalAmount)`
+      );
+
+    const invoiceId = invoiceResult.recordset[0].InvoiceID;
+
+    // Thêm các sản phẩm vào bảng InvoiceItems
+    for (const item of cartItems.recordset) {
+      await pool
+        .request()
+        .input("InvoiceID", sql.Int, invoiceId)
+        .input("ProductID", sql.Int, item.ProductID)
+        .input("Quantity", sql.Int, item.Quantity)
+        .input("UnitPrice", sql.Decimal(10, 2), item.UnitPrice)
+        .query(
+          `INSERT INTO InvoiceItems (InvoiceID, ProductID, Quantity, UnitPrice)
+           VALUES (@InvoiceID, @ProductID, @Quantity, @UnitPrice)`
+        );
+    }
 
     // Xóa các sản phẩm trong giỏ hàng
     await pool
@@ -249,7 +294,9 @@ router.post("/checkout", authenticateToken, async (req, res) => {
 
     res
       .status(200)
-      .send(`Thanh toán thành công. Tổng tiền: ${totalAmount} VND`);
+      .send(
+        `Thanh toán thành công. Tổng tiền: ${totalAmount} VND. Hóa đơn ID: ${invoiceId}`
+      );
   } catch (err) {
     console.error("Lỗi khi thanh toán:", err);
     res.status(500).send("Lỗi server");
